@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
+import 'package:sea_inventory/pages/scanner.dart';
 import 'package:sea_inventory/pages/test.dart';
+
+import 'inventory_overview.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -14,7 +17,8 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-final orpc = OdooClient('https://home.seacorp.vn/');
+//final orpc = OdooClient('https://home.seacorp.vn/');
+final orpc = OdooClient('https://pilot.seateklab.vn/');
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -29,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   List stockWarehouse = [];
   List inventory = [];
   final controller = ScrollController();
+  bool loading = false;
 
   @override
   void initState() {
@@ -43,7 +48,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<dynamic> fetchCompany() async {
     HttpOverrides.global = MyHttpOverrides();
-    await orpc.authenticate('opensea12pro', 'appconnect', 'xMNgdAQM');
+    // await orpc.authenticate('opensea12pro', 'appconnect', 'xMNgdAQM');
+    await orpc.authenticate('opensea12pilot', 'khoa.huynh@seatek.vn', '123456');
     return orpc.callKw({
       'model': 'res.company',
       'method': 'search_read',
@@ -67,7 +73,8 @@ class _HomePageState extends State<HomePage> {
 
   getStockWarehouse() async {
     HttpOverrides.global = MyHttpOverrides();
-    await orpc.authenticate('opensea12pro', 'appconnect', 'xMNgdAQM');
+    //await orpc.authenticate('opensea12pro', 'appconnect', 'xMNgdAQM');
+    await orpc.authenticate('opensea12pilot', 'khoa.huynh@seatek.vn', '123456');
     final stock = await orpc.callKw({
       'model': 'stock.warehouse',
       'method': 'search_read',
@@ -82,14 +89,15 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       stockWarehouse = stock;
     });
-    print(stockWarehouse);
   }
 
   getInventory() async {
-    print(1111);
+    setState(() {
+      loading = false;
+    });
     HttpOverrides.global = MyHttpOverrides();
-    await orpc.authenticate('opensea12pro', 'appconnect', 'xMNgdAQM');
-    //print(inventory);
+    //await orpc.authenticate('opensea12pro', 'appconnect', 'xMNgdAQM');
+    await orpc.authenticate('opensea12pilot', 'khoa.huynh@seatek.vn', '123456');
     final inven = await orpc.callKw({
       'model': 'stock.picking.type',
       'method': 'search_read',
@@ -122,13 +130,14 @@ class _HomePageState extends State<HomePage> {
         //});
         setState(() {
           inventory = inven;
+          loading = true;
         });
       }
     }
     else{
-      print(inven);
       setState(() {
         inventory = inven;
+        loading = true;
       });
     }
   }
@@ -145,7 +154,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Test(id: int.parse(barcodeScanRes)),
+          builder: (context) => BarcodeScanner(id: int.parse(barcodeScanRes)),
         ));
   }
 
@@ -160,7 +169,12 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
               onPressed: () {
-                scanQR();
+                //scanQR();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BarcodeScanner(id: 2835, name: 'KCB/INT/00009'),
+                    ));
               },
               icon: const Icon(Icons.qr_code, color: Colors.white, size: 30))
         ],
@@ -170,6 +184,7 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.only(bottom: 20),
           child: Column(
             children: [
+              if(company_name.isNotEmpty)
               Container(
                 margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 alignment: Alignment.bottomRight,
@@ -219,11 +234,20 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.all(10),
-                child: inventory.isEmpty
-                    ? const Center(child: Text("Data not found!! Hic hic"),)
-                    : ListView.builder(
+              Column(
+                children: [
+                  !loading ? Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ) : Container(
+                    padding: EdgeInsets.all(10),
+                    child: inventory.isEmpty
+                        ? Container(
+                      height: MediaQuery.of(context).size.height,
+                      child: const Center(child: Text("Data not found!! Hic hic")),)
+                        : ListView.builder(
                         shrinkWrap: true,
                         itemCount: inventory.length,
                         controller: controller,
@@ -234,25 +258,25 @@ class _HomePageState extends State<HomePage> {
                                 : const Color.fromARGB(255, 255, 255, 255),
                             child: ListTile(
                               title: Text(inventory[index]['name']),
-                              subtitle: inventory[index]['warehouse_id'] !=
-                                      false
-                                  ? Text(inventory[index]['warehouse_id'][1]
-                                      .toString())
+                              subtitle: inventory[index]['warehouse_id'] != false
+                                  ? Text(inventory[index]['warehouse_id'][1].toString())
                                   : const Text(''),
                               onTap: () {
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //       builder: (context) =>
-                                //           InventoryOverview(
-                                //               id: fixedInventories[
-                                //                   index]['id']),
-                                //     ));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          InventoryOverview(
+                                              id: inventory[index]['id']),
+                                    ));
                               },
                             ),
                           );
                         }),
-              )
+                  )
+                ],
+              ),
+
             ],
           ),
         ),
