@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
+import 'package:sea_inventory/pages/inventory_info.dart';
 import 'package:sea_inventory/pages/scanner.dart';
 import 'package:sea_inventory/pages/test.dart';
 
@@ -49,7 +50,7 @@ class _HomePageState extends State<HomePage> {
   Future<dynamic> fetchCompany() async {
     HttpOverrides.global = MyHttpOverrides();
     // await orpc.authenticate('opensea12pro', 'appconnect', 'xMNgdAQM');
-    await orpc.authenticate('opensea12pilot', 'khoa.huynh@seatek.vn', '123456');
+    await orpc.authenticate('HR_Company', 'khoa.huynh@seatek.vn', '1234');
     return orpc.callKw({
       'model': 'res.company',
       'method': 'search_read',
@@ -74,7 +75,7 @@ class _HomePageState extends State<HomePage> {
   getStockWarehouse() async {
     HttpOverrides.global = MyHttpOverrides();
     //await orpc.authenticate('opensea12pro', 'appconnect', 'xMNgdAQM');
-    await orpc.authenticate('opensea12pilot', 'khoa.huynh@seatek.vn', '123456');
+    await orpc.authenticate('HR_Company', 'khoa.huynh@seatek.vn', '1234');
     final stock = await orpc.callKw({
       'model': 'stock.warehouse',
       'method': 'search_read',
@@ -97,7 +98,7 @@ class _HomePageState extends State<HomePage> {
     });
     HttpOverrides.global = MyHttpOverrides();
     //await orpc.authenticate('opensea12pro', 'appconnect', 'xMNgdAQM');
-    await orpc.authenticate('opensea12pilot', 'khoa.huynh@seatek.vn', '123456');
+    await orpc.authenticate('HR_Company', 'khoa.huynh@seatek.vn', '1234');
     final inven = await orpc.callKw({
       'model': 'stock.picking.type',
       'method': 'search_read',
@@ -133,8 +134,7 @@ class _HomePageState extends State<HomePage> {
           loading = true;
         });
       }
-    }
-    else{
+    } else {
       setState(() {
         inventory = inven;
         loading = true;
@@ -154,133 +154,178 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => BarcodeScanner(id: int.parse(barcodeScanRes)),
+          builder: (context) => InventoryInfo(name: barcodeScanRes.toString()),
         ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(
-          child: Text('Inventory'),
-        ),
-        backgroundColor: Colors.deepPurple,
-        actions: [
-          IconButton(
-              onPressed: () {
-                //scanQR();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const BarcodeScanner(id: 2835, name: 'KCB/INT/00009'),
-                    ));
-              },
-              icon: const Icon(Icons.qr_code, color: Colors.white, size: 30))
-        ],
-      ),
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.only(bottom: 20),
+          padding: const EdgeInsets.only(bottom: 10),
           child: Column(
             children: [
-              if(company_name.isNotEmpty)
-              Container(
-                margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                alignment: Alignment.bottomRight,
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                        color: Colors.deepPurple
-                            .shade50, //background color of dropdown button
-                        border: Border.all(
-                            color: Colors.black38,
-                            width: 1), //border of dropdown button
-                        borderRadius: BorderRadius.circular(
-                            10), //border raiuds of dropdown button
-                        boxShadow: const <BoxShadow>[
-                          //apply shadow on Dropdown button
-                          BoxShadow(
-                              color: Color.fromRGBO(
-                                  0, 0, 0, 0.57), //shadow for button
-                              blurRadius: 5) //blur radius of shadow
-                        ]),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      child: DropdownButton(
-                        dropdownColor: Colors.blueGrey.shade100,
-                        menuMaxHeight: 400,
-                        value: company_id,
-                        isExpanded: true,
-                        underline: Container(),
-                        elevation: 16,
-                        onChanged: (value) async{
-                          setState(() {
-                            company_id = value as int;
-                          });
-                          await getStockWarehouse();
-                          await getInventory();
-                        },
-                        items: [
-                          ...company_name.map((e) => DropdownMenuItem(
-                              value: e['id'],
-                              child: Container(
-                                child: Text(e['name']),
-                              )))
+              ClipPath(
+                  clipper: WaveClip(),
+                  child: Container(
+                      height: 105,
+                      width: MediaQuery.of(context).size.width * 1,
+                      color: Colors.blue,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          const Text('Inventory',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 30,
+                                fontWeight: FontWeight.w700,
+                              )),
+                          const Spacer(),
+                          IconButton(
+                              onPressed: () {
+                                scanQR();
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //       builder: (context) =>
+                                //           const BarcodeScanner(id: 2835, name: 'KCB/INT/00009'),
+                                //     ));
+                              },
+                              icon: const Icon(Icons.qr_code,
+                                  color: Colors.white, size: 30))
                         ],
+                      ))),
+              if (company_name.isNotEmpty)
+                Container(
+                  margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  alignment: Alignment.bottomRight,
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                          color: Colors.deepPurple
+                              .shade50, //background color of dropdown button
+                          border: Border.all(
+                              color: Colors.black38,
+                              width: 1), //border of dropdown button
+                          borderRadius: BorderRadius.circular(
+                              10), //border raiuds of dropdown button
+                          boxShadow: const <BoxShadow>[
+                            //apply shadow on Dropdown button
+                            BoxShadow(
+                                color: Color.fromRGBO(
+                                    0, 0, 0, 0.57), //shadow for button
+                                blurRadius: 5) //blur radius of shadow
+                          ]),
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        child: DropdownButton(
+                          dropdownColor: Colors.blueGrey.shade100,
+                          menuMaxHeight: 400,
+                          value: company_id,
+                          isExpanded: true,
+                          underline: Container(),
+                          elevation: 16,
+                          onChanged: (value) async {
+                            setState(() {
+                              company_id = value as int;
+                            });
+                            await getStockWarehouse();
+                            await getInventory();
+                          },
+                          items: [
+                            ...company_name.map((e) => DropdownMenuItem(
+                                value: e['id'],
+                                child: Container(
+                                  child: Text(e['name']),
+                                )))
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
               Column(
                 children: [
-                  !loading ? Container(
-                    height: MediaQuery.of(context).size.height,
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ) : Container(
-                    padding: EdgeInsets.all(10),
-                    child: inventory.isEmpty
-                        ? Container(
-                      height: MediaQuery.of(context).size.height,
-                      child: const Center(child: Text("Data not found!! Hic hic")),)
-                        : ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: inventory.length,
-                        controller: controller,
-                        itemBuilder: (BuildContext ctxt, int index) {
-                          return Container(
-                            color: index % 2 == 0
-                                ? const Color.fromARGB(255, 239, 241, 243)
-                                : const Color.fromARGB(255, 255, 255, 255),
-                            child: ListTile(
-                              title: Text(inventory[index]['name']),
-                              subtitle: inventory[index]['warehouse_id'] != false
-                                  ? Text(inventory[index]['warehouse_id'][1].toString())
-                                  : const Text(''),
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          InventoryOverview(
-                                              id: inventory[index]['id']),
-                                    ));
-                              },
-                            ),
-                          );
-                        }),
-                  )
+                  !loading
+                      ? Container(
+                          height: MediaQuery.of(context).size.height,
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : Container(
+                          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: inventory.isEmpty
+                              ? Container(
+                                  height: MediaQuery.of(context).size.height,
+                                  child: const Center(
+                                      child: Text("Data not found!! Hic hic")),
+                                )
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: inventory.length,
+                                  controller: controller,
+                                  itemBuilder: (BuildContext ctxt, int index) {
+                                    return Container(
+                                      color: index % 2 == 0
+                                          ? const Color.fromARGB(
+                                              255, 239, 241, 243)
+                                          : const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                      child: ListTile(
+                                        title: Text(inventory[index]['name']),
+                                        subtitle: inventory[index]
+                                                    ['warehouse_id'] !=
+                                                false
+                                            ? Text(inventory[index]
+                                                    ['warehouse_id'][1]
+                                                .toString())
+                                            : const Text(''),
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    InventoryOverview(
+                                                        id: inventory[index]
+                                                            ['id']),
+                                              ));
+                                        },
+                                      ),
+                                    );
+                                  }),
+                        )
                 ],
               ),
-
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class WaveClip extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = new Path();
+
+    path.lineTo(0, size.height - 15);
+    path.quadraticBezierTo(
+        size.width / 4, size.height, size.width / 2, size.height - 20);
+    path.quadraticBezierTo(
+        3 / 4 * size.width, size.height - 40, size.width, size.height - 20);
+    path.lineTo(size.width, 0);
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return false;
   }
 }
