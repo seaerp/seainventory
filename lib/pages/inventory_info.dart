@@ -37,7 +37,7 @@ class _InventoryInfoState extends State<InventoryInfo>
   List listBackorder = [];
   List listReturn = [];
 
-  bool isWatchingInfo = false;
+  bool isWatchingInfo = true;
   bool isWatchingOperations = false;
   bool isWatchingReturn = false;
   bool isWatchingDelivery = false;
@@ -275,142 +275,151 @@ class _InventoryInfoState extends State<InventoryInfo>
                             ])),
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-                      child: Table(
-                        border: TableBorder.all(
-                          color: Colors.lightBlueAccent,
-                          width: 1,
-                          style: BorderStyle.solid,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        columnWidths: const {
-                          0: FlexColumnWidth(2),
-                          1: FlexColumnWidth(5),
-                        },
-                        children: [
-                          TableRow(children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: const Text(
-                                'Partner',
-                                style: TextStyle(fontWeight: FontWeight.w500),
+                    isWatchingInfo
+                        ? Container(
+                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            child: Table(
+                              border: TableBorder.all(
+                                color: Colors.lightBlueAccent,
+                                width: 1,
+                                style: BorderStyle.solid,
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: e['partner_id'] == false
-                                  ? const Text('')
-                                  : Text(
-                                      e['partner_id'][1],
+                              columnWidths: const {
+                                0: FlexColumnWidth(2),
+                                1: FlexColumnWidth(5),
+                              },
+                              children: [
+                                TableRow(children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: const Text(
+                                      'Partner',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500),
                                     ),
-                            ),
-                          ]),
-                          TableRow(children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: const Text(
-                                'Source Location',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: e['location_id'] == false
-                                  ? const Text('')
-                                  : Text(
-                                      e['location_id'][1],
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: e['partner_id'] == false
+                                        ? const Text('')
+                                        : Text(
+                                            e['partner_id'][1],
+                                          ),
+                                  ),
+                                ]),
+                                TableRow(children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: const Text(
+                                      'Source Location',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500),
                                     ),
-                            ),
-                          ]),
-                          TableRow(children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: const Text(
-                                'Destination Location',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: e['location_dest_id'] == false
-                                  ? const Text('')
-                                  : Text(
-                                      e['location_dest_id'][1],
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: e['location_id'] == false
+                                        ? const Text('')
+                                        : Text(
+                                            e['location_id'][1],
+                                          ),
+                                  ),
+                                ]),
+                                TableRow(children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: const Text(
+                                      'Destination Location',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500),
                                     ),
-                            ),
-                          ]),
-                          TableRow(children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: const Text(
-                                'Operation Type',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: e['picking_type_id'] == false
-                                  ? const Text('')
-                                  : Text(
-                                      e['picking_type_id'][1],
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: e['location_dest_id'] == false
+                                        ? const Text('')
+                                        : Text(
+                                            e['location_dest_id'][1],
+                                          ),
+                                  ),
+                                ]),
+                                TableRow(children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: const Text(
+                                      'Operation Type',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500),
                                     ),
-                            ),
-                          ]),
-                          TableRow(children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: const Text(
-                                'Scheduled Date',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: e['scheduled_date'] == false
-                                  ? const Text('')
-                                  : Text(
-                                      e['scheduled_date'].toString(),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: e['picking_type_id'] == false
+                                        ? const Text('')
+                                        : Text(
+                                            e['picking_type_id'][1],
+                                          ),
+                                  ),
+                                ]),
+                                TableRow(children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: const Text(
+                                      'Scheduled Date',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500),
                                     ),
-                            ),
-                          ]),
-                          TableRow(children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: const Text(
-                                'Effective Date',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: e['date_done'] == false
-                                  ? const Text('')
-                                  : Text(
-                                      e['date_done'].toString(),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: e['scheduled_date'] == false
+                                        ? const Text('')
+                                        : Text(
+                                            e['scheduled_date'].toString(),
+                                          ),
+                                  ),
+                                ]),
+                                TableRow(children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: const Text(
+                                      'Effective Date',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500),
                                     ),
-                            ),
-                          ]),
-                          TableRow(children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: const Text(
-                                'Source Document',
-                                style: TextStyle(fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              child: e['origin'] == false
-                                  ? const Text('')
-                                  : Text(
-                                      e['origin'].toString(),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: e['date_done'] == false
+                                        ? const Text('')
+                                        : Text(
+                                            e['date_done'].toString(),
+                                          ),
+                                  ),
+                                ]),
+                                TableRow(children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: const Text(
+                                      'Source Document',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500),
                                     ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    child: e['origin'] == false
+                                        ? const Text('')
+                                        : Text(
+                                            e['origin'].toString(),
+                                          ),
+                                  ),
+                                ]),
+                              ],
                             ),
-                          ]),
-                        ],
-                      ),
-                    ),
+                          )
+                        : const SizedBox(),
                     Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 5, vertical: 10),
