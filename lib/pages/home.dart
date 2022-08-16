@@ -154,10 +154,29 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
         context,
         MaterialPageRoute(
+          //builder: (context) =>const InventoryInfo(name: 'KCB/INT/00009'),
           builder: (context) => InventoryInfo(name: barcodeScanRes.toString()),
         ));
   }
 
+  updateCompanyId(company_id) async {
+    HttpOverrides.global = MyHttpOverrides();
+    // await orpc.authenticate('opensea12pro', 'appconnect', 'xMNgdAQM');
+    await orpc.authenticate('HR_Company', 'khoa.huynh@seatek.vn', '1234');
+    await orpc.callKw(
+      {
+        'model': 'res.users',
+        'method': 'write',
+        'args': [
+          8,
+          {
+            'company_id': company_id,
+          },
+        ],
+        'kwargs': {},
+      }
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -233,6 +252,7 @@ class _HomePageState extends State<HomePage> {
                             setState(() {
                               company_id = value as int;
                             });
+                            await updateCompanyId(value as int);
                             await getStockWarehouse();
                             await getInventory();
                           },
@@ -261,10 +281,24 @@ class _HomePageState extends State<HomePage> {
                           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                           child: inventory.isEmpty
                               ? Container(
-                                  height: MediaQuery.of(context).size.height,
-                                  child: const Center(
-                                      child: Text("Data not found!! Hic hic")),
-                                )
+                              height: MediaQuery.of(context).size.height * 1,
+                              width: MediaQuery.of(context).size.width * 1,
+                              child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Image.network(
+                                          'https://res.cloudinary.com/dhrpdnd8m/image/upload/v1658376518/zvhinkjq5tg9y3wqpf7z.png',
+                                          height: 60),
+                                      const SizedBox(height: 20),
+                                      const Text(
+                                        'Không có dữ liệu để hiển thị',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700, fontSize: 20),
+                                      )
+                                    ],
+                                  )))
                               : ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: inventory.length,
@@ -290,9 +324,7 @@ class _HomePageState extends State<HomePage> {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    InventoryOverview(
-                                                        id: inventory[index]
-                                                            ['id']),
+                                                    InventoryOverview(id: inventory[index]['id']),
                                               ));
                                         },
                                       ),

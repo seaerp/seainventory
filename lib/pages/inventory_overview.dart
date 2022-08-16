@@ -104,6 +104,7 @@ class _InventoryOverviewState extends State<InventoryOverview> {
         context,
         MaterialPageRoute(
           builder: (context) => InventoryInfo(name: barcodeScanRes.toString()),
+          //builder: (context) =>const InventoryInfo(name: 'KCB/INT/00009'),
         ));
   }
 
