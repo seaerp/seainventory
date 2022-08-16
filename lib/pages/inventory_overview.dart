@@ -117,14 +117,9 @@ class _InventoryOverviewState extends State<InventoryOverview> {
             IconButton(
                 onPressed: () {
                   scanQR();
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) =>
-                  //           const BarcodeScanner(id: 2835, name: 'KCB/INT/00009'),
-                  //     ));
                 },
-                icon: const Icon(Icons.qr_code, color: Colors.white, size: 30))
+                icon: const Icon(Icons.qr_code, color: Colors.white, size: 30)
+            )
           ],
         ),
         body: Container(
@@ -133,7 +128,7 @@ class _InventoryOverviewState extends State<InventoryOverview> {
                   child: CircularProgressIndicator(),
                 )
               : inventory.isEmpty
-                  ? Container(
+                  ? SizedBox(
                       height: MediaQuery.of(context).size.height * 1,
                       width: MediaQuery.of(context).size.width * 1,
                       child: Center(
@@ -147,26 +142,23 @@ class _InventoryOverviewState extends State<InventoryOverview> {
                           const SizedBox(height: 20),
                           const Text(
                             'Không có dữ liệu để hiển thị',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700, fontSize: 20),
+                            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20),
                           )
                         ],
                       )))
                   : ListView.builder(
                       itemCount: inventory.length,
                       controller: controller,
-                      itemBuilder: (BuildContext ctxt, int index) {
+                      itemBuilder: (BuildContext ctx, int index) {
                         return Container(
                           color: index % 2 == 0
                               ? const Color.fromARGB(255, 239, 241, 243)
                               : const Color.fromARGB(255, 255, 255, 255),
                           child: ListTile(
                             title: Text(inventory[index]['name']),
-                            subtitle: inventory[index]['location_dest_id'] ==
-                                    false
+                            subtitle: inventory[index]['location_dest_id'] == false
                                 ? const Text("")
-                                : Text(inventory[index]['location_dest_id'][1]
-                                    .toString()),
+                                : Text(inventory[index]['location_dest_id'][1].toString()),
                             onTap: () {
                               Navigator.push(
                                   context,
@@ -175,7 +167,8 @@ class _InventoryOverviewState extends State<InventoryOverview> {
                                       id: inventory[index]['id'],
                                       name: inventory[index]['name'],
                                     ),
-                                  ));
+                                  )
+                              );
                             },
                           ),
                         );

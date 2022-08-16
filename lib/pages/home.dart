@@ -206,15 +206,8 @@ class _HomePageState extends State<HomePage> {
                           IconButton(
                               onPressed: () {
                                 scanQR();
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //       builder: (context) =>
-                                //           const BarcodeScanner(id: 2835, name: 'KCB/INT/00009'),
-                                //     ));
                               },
-                              icon: const Icon(Icons.qr_code,
-                                  color: Colors.white, size: 30))
+                              icon: const Icon(Icons.qr_code, color: Colors.white, size: 30))
                         ],
                       ))),
               if (company_name.isNotEmpty)
@@ -225,18 +218,15 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                          color: Colors.deepPurple
-                              .shade50, //background color of dropdown button
+                          color: Colors.deepPurple.shade50, //background color of dropdown button
                           border: Border.all(
                               color: Colors.black38,
                               width: 1), //border of dropdown button
-                          borderRadius: BorderRadius.circular(
-                              10), //border raiuds of dropdown button
+                          borderRadius: BorderRadius.circular(10), //border raiuds of dropdown button
                           boxShadow: const <BoxShadow>[
                             //apply shadow on Dropdown button
                             BoxShadow(
-                                color: Color.fromRGBO(
-                                    0, 0, 0, 0.57), //shadow for button
+                                color: Color.fromRGBO(0, 0, 0, 0.57), //shadow for button
                                 blurRadius: 5) //blur radius of shadow
                           ]),
                       child: Container(
@@ -261,7 +251,9 @@ class _HomePageState extends State<HomePage> {
                                 value: e['id'],
                                 child: Container(
                                   child: Text(e['name']),
-                                )))
+                                )
+                              )
+                            )
                           ],
                         ),
                       ),
@@ -278,9 +270,9 @@ class _HomePageState extends State<HomePage> {
                           ),
                         )
                       : Container(
-                          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           child: inventory.isEmpty
-                              ? Container(
+                              ? SizedBox(
                               height: MediaQuery.of(context).size.height * 1,
                               width: MediaQuery.of(context).size.width * 1,
                               child: Center(
@@ -292,10 +284,10 @@ class _HomePageState extends State<HomePage> {
                                           'https://res.cloudinary.com/dhrpdnd8m/image/upload/v1658376518/zvhinkjq5tg9y3wqpf7z.png',
                                           height: 60),
                                       const SizedBox(height: 20),
-                                      const Text(
-                                        'Không có dữ liệu để hiển thị',
+                                      const Text('Không có dữ liệu để hiển thị',
                                         style: TextStyle(
-                                            fontWeight: FontWeight.w700, fontSize: 20),
+                                            fontWeight: FontWeight.w700, fontSize: 2
+                                        ),
                                       )
                                     ],
                                   )))
@@ -306,18 +298,12 @@ class _HomePageState extends State<HomePage> {
                                   itemBuilder: (BuildContext ctxt, int index) {
                                     return Container(
                                       color: index % 2 == 0
-                                          ? const Color.fromARGB(
-                                              255, 239, 241, 243)
-                                          : const Color.fromARGB(
-                                              255, 255, 255, 255),
+                                          ? const Color.fromARGB(255, 239, 241, 243)
+                                          : const Color.fromARGB(255, 255, 255, 255),
                                       child: ListTile(
                                         title: Text(inventory[index]['name']),
-                                        subtitle: inventory[index]
-                                                    ['warehouse_id'] !=
-                                                false
-                                            ? Text(inventory[index]
-                                                    ['warehouse_id'][1]
-                                                .toString())
+                                        subtitle: inventory[index]['warehouse_id'] !=false
+                                            ? Text(inventory[index]['warehouse_id'][1].toString())
                                             : const Text(''),
                                         onTap: () {
                                           Navigator.push(
@@ -325,7 +311,8 @@ class _HomePageState extends State<HomePage> {
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     InventoryOverview(id: inventory[index]['id']),
-                                              ));
+                                              )
+                                          );
                                         },
                                       ),
                                     );
@@ -347,10 +334,8 @@ class WaveClip extends CustomClipper<Path> {
     Path path = new Path();
 
     path.lineTo(0, size.height - 15);
-    path.quadraticBezierTo(
-        size.width / 4, size.height, size.width / 2, size.height - 20);
-    path.quadraticBezierTo(
-        3 / 4 * size.width, size.height - 40, size.width, size.height - 20);
+    path.quadraticBezierTo( size.width / 4, size.height, size.width / 2, size.height - 20);
+    path.quadraticBezierTo(3 / 4 * size.width, size.height - 40, size.width, size.height - 20);
     path.lineTo(size.width, 0);
 
     return path;
